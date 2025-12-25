@@ -1,19 +1,74 @@
-<!-- frontend/index.html -->
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Simple Honeypot</title>
-  <link rel="stylesheet" href="static/css/styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EigenGuard Honeypot</title>
+  <link rel="stylesheet" href="static/css/style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome</h1>
-    <p>This is a demo honeypot service. For testing only.</p>
-    <ul>
-      <li><a href="/admin">Fake Admin Panel</a></li>
-      <li><a href="/dashboard">Honeypot Dashboard</a></li>
-    </ul>
+
+<div class="container">
+  <h2>🛡️ EigenGuard Honeypot Dashboard</h2>
+  <p class="subtitle">Real-time Attack Monitoring & Threat Intelligence</p>
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>Total Logs</h3>
+      <p id="count">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>🚨 Detected Attacks</h3>
+      <p id="attackCount">0</p>
+    </div>
+    <div class="stat-card">
+      <h3>🛡️ Blocked IPs</h3>
+      <p id="blockedCount">0</p>
+    </div>
   </div>
+
+  <div class="section">
+    <h3>🚨 Suspicious Attack Logs</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>User-Agent</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody id="attackLogs"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>📜 All Recent Logs</h3>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Method</th>
+            <th>Endpoint</th>
+          </tr>
+        </thead>
+        <tbody id="allLogs"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    EigenGuard Honeypot © 2025 • Monitoring threats in real time
+  </footer>
+</div>
+
+<script src="static/js/dashboard.js"></script>
+
 </body>
 </html>

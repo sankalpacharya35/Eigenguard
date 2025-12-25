@@ -1,67 +1,46 @@
-async function fetchLogs() {
-  try {
-    const [logsResp, cntResp] = await Promise.all([
-      fetch('/api/logs'),
-      fetch('/api/logs/count')
-    ]);
+async function loadLogs() {
 
-    const logs = await logsResp.json();
-    const cnt = await cntResp.json();
+  const [allRes, attackRes, countRes] = await Promise.all([
+    fetch("/api/logs"),
+    fetch("/api/logs/attacks"),
+    fetch("/api/logs/count")
+  ]);
 
-    document.getElementById("summary").innerText = `Total logs: ${cnt.count}`;
+  const allLogs = await allRes.json();
+  const attackLogs = await attackRes.json();
+  const count = await countRes.json();
 
-    const tbody = document.querySelector("#logsTable tbody");
-    tbody.innerHTML = "";
+  document.getElementById("count").innerText = count.count;
 
-    logs.forEach((r) => {
-      const tr = document.createElement("tr");
+  const attackBody = document.getElementById("attackLogs");
+  attackBody.innerHTML = "";
 
-      tr.innerHTML = `
-        <td>${r.id}</td>
-        <td>${r.timestamp}</td>
-        <td>${r.endpoint}</td>
-        <td>${r.ip}</td>
-        <td>${r.user_agent}</td>
-        <td>${formatBody(r.body)}</td>
-        <td>${formatHeaders(r.headers)}</td>
-      `;
+  attackLogs.forEach(l => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${l.timestamp}</td>
+      <td>${l.ip}</td>
+      <td>${l.method}</td>
+      <td>${l.endpoint}</td>
+      <td>${l.user_agent}</td>
+    `;
+    attackBody.appendChild(tr);
+  });
 
-      tbody.appendChild(tr);
-    });
+  const allBody = document.getElementById("allLogs");
+  allBody.innerHTML = "";
 
-  } catch (err) {
-    console.error("Error loading logs:", err);
-  }
+  allLogs.forEach(l => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${l.timestamp}</td>
+      <td>${l.ip}</td>
+      <td>${l.method}</td>
+      <td>${l.endpoint}</td>
+    `;
+    allBody.appendChild(tr);
+  });
 }
 
-function formatBody(bodyText) {
-  if (!bodyText) return "<i>Empty</i>";
-
-  try {
-    const obj = JSON.parse(bodyText);
-    return `<pre>${JSON.stringify(obj, null, 2)}</pre>`;
-  } catch {
-    return `<pre>${bodyText}</pre>`;
-  }
-}
-
-function formatHeaders(headersText) {
-  let html = `<table class="subtable">`;
-
-  try {
-    const headers = JSON.parse(headersText.replace(/'/g, '"'));
-
-    Object.keys(headers).forEach(key => {
-      html += `<tr><td><b>${key}</b></td><td>${headers[key]}</td></tr>`;
-    });
-
-  } catch {
-    html += `<tr><td colspan="2"><pre>${headersText}</pre></td></tr>`;
-  }
-
-  html += `</table>`;
-  return html;
-}
-
-
-fetchLogs();
+// load once (NO polling spam)
+loadLogs();

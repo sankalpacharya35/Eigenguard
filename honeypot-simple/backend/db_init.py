@@ -1,33 +1,31 @@
-# backend/db_init.py
-import sqlite3, os
-from datetime import datetime
+import sqlite3
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "honeypot.db")
-
-conn = sqlite3.connect(DB_PATH)
+conn = sqlite3.connect("honeypot.db")
 cur = conn.cursor()
 
 cur.execute("""
-CREATE TABLE IF NOT EXISTS logs (
+CREATE TABLE IF NOT EXISTS requests (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    timestamp TEXT,
-    endpoint TEXT,
+    time TEXT,
     ip TEXT,
+    method TEXT,
+    path TEXT,
     user_agent TEXT,
-    headers TEXT,
     body TEXT
 )
 """)
+
 cur.execute("""
-CREATE TABLE IF NOT EXISTS blocked_ips (
+CREATE TABLE IF NOT EXISTS features (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ip TEXT UNIQUE,
-    reason TEXT,
-    score REAL,
-    blocked_at TEXT
+    req_id INTEGER,
+    req_rate INTEGER,
+    body_size INTEGER,
+    header_count INTEGER,
+    has_sql INTEGER,
+    has_cmd INTEGER
 )
 """)
+
 conn.commit()
 conn.close()
-print("DB initialized at", DB_PATH)
